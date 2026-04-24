@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { PageShell } from '@/components/shared/page-shell'
+import { NavbarShell } from '@/components/shared/navbar-shell'
+import { Footer } from '@/components/shared/footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -60,7 +61,7 @@ export default function DashboardAdsPage() {
   const [activeSheetId, setActiveSheetId] = useState<string | null>(null)
 
   const isUserAd = (ad: ClassifiedAd) =>
-    ad.id.startsWith('user-') || (user && ad.seller.id === user.id)
+    ad.id.startsWith('user-') || (!!user && ad.seller?.id === user.id)
   const userAds = useMemo(() => ads.filter((ad) => isUserAd(ad)), [ads, user])
   const allSelected = selectedIds.length === userAds.length && userAds.length > 0
   const selectedCount = selectedIds.length
@@ -111,19 +112,26 @@ export default function DashboardAdsPage() {
   }
 
   return (
-    <PageShell
-      title="My Ads"
-      description="Track and update your classified listings."
-      actions={
-        <Button asChild>
-          <Link href="/dashboard/ads/new">New Ad</Link>
-        </Button>
-      }
-    >
+    <div className="min-h-screen bg-[#ececec] text-[#1d324a]">
+      <NavbarShell />
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="mb-6 rounded-md border border-[#d7dde5] bg-white p-6 shadow-[0_8px_24px_rgba(13,38,65,0.08)]">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#5a738e]">My ads</p>
+        <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-[#2c4f71]">Manage your live classifieds</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5a6f82]">Edit titles, change status, and remove sold listings from your active board.</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link href="/create/classified" className="inline-flex items-center rounded-sm border border-[#0f6d22] bg-[#8de860] px-4 py-2 text-sm font-bold text-[#0d421b] hover:bg-[#9cf071]">
+            Post new ad
+          </Link>
+          <Link href="/classifieds" className="inline-flex items-center rounded-sm border border-[#b9c8d8] bg-[#f5f8fb] px-4 py-2 text-sm font-semibold text-[#365777] hover:bg-[#eaf1f8]">
+            Browse classifieds
+          </Link>
+        </div>
+      </section>
       {selectedCount > 0 && (
-        <Card className="border-border bg-secondary/40 mb-4">
+        <Card className="mb-4 border-[#c9d6e4] bg-white">
           <CardContent className="p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div className="text-sm text-muted-foreground">{selectedCount} selected</div>
+            <div className="text-sm text-[#5f7890]">{selectedCount} selected</div>
             <div className="flex flex-wrap gap-2">
               <Button size="sm" variant="outline" onClick={() => handleBulkAction('Marked sold')}>
                 Mark Sold
@@ -141,19 +149,19 @@ export default function DashboardAdsPage() {
 
       <div className="grid gap-4">
         {userAds.length > 0 && (
-          <Card className="border-border bg-card">
+          <Card className="border-[#c9d6e4] bg-white">
             <CardContent className="p-4 flex items-center gap-3">
               <Checkbox
                 checked={allSelected}
                 onCheckedChange={(checked) => setSelectedIds(checked ? userAds.map((a) => a.id) : [])}
               />
-              <span className="text-sm text-muted-foreground">Select all</span>
+              <span className="text-sm text-[#5f7890]">Select all</span>
             </CardContent>
           </Card>
         )}
 
         {userAds.map((ad) => (
-          <Card key={ad.id} className="border-border bg-card transition-transform hover:-translate-y-1">
+          <Card key={ad.id} className="border-[#c9d6e4] bg-white transition-transform hover:-translate-y-1">
             <CardContent className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="flex items-start gap-3">
                 <Checkbox
@@ -191,15 +199,15 @@ export default function DashboardAdsPage() {
                     </div>
                   ) : (
                     <>
-                      <h2 className="text-lg font-semibold text-foreground">{ad.title}</h2>
-                      <p className="text-sm text-muted-foreground">{ad.location} · ${ad.price.toLocaleString()}</p>
+                      <h2 className="text-lg font-bold text-[#2b4c6d]">{ad.title}</h2>
+                      <p className="text-sm text-[#5f7890]">{ad.location} · ${ad.price.toLocaleString()}</p>
                     </>
                   )}
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary">{ad.category}</Badge>
-                <Badge variant="outline">Owner Only</Badge>
+                <Badge className="rounded-sm border border-[#b8c7d8] bg-[#f0f6fd] text-[#345a7f] hover:bg-[#f0f6fd]">{ad.category}</Badge>
+                <Badge className="rounded-sm border border-[#d4deea] bg-white text-[#5f7a95] hover:bg-white">Owner Only</Badge>
                 <Select
                   value={statusMap[ad.id]}
                   onValueChange={(value) => updateStatus(ad.id, value as ClassifiedAd['status'])}
@@ -218,7 +226,7 @@ export default function DashboardAdsPage() {
                   Preview
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href={`/dashboard/ads/${ad.id}`}>View</Link>
+                  <Link href={`/classifieds/${ad.slug}`}>View Live</Link>
                 </Button>
                 <Button
                   onClick={() => {
@@ -241,8 +249,8 @@ export default function DashboardAdsPage() {
           </Card>
         ))}
         {userAds.length === 0 && (
-          <Card className="border-border bg-card">
-            <CardContent className="p-8 text-center text-sm text-muted-foreground">
+          <Card className="border-[#c9d6e4] bg-white">
+            <CardContent className="p-8 text-center text-sm text-[#5f7890]">
               No ads yet. Create your first ad to see it here.
             </CardContent>
           </Card>
@@ -293,6 +301,8 @@ export default function DashboardAdsPage() {
           )}
         </SheetContent>
       </Sheet>
-    </PageShell>
+      </main>
+      <Footer />
+    </div>
   )
 }
