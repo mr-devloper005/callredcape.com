@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/auth-context";
+import { Footer } from "@/components/shared/footer";
 import { CATEGORY_OPTIONS } from "@/lib/categories";
 import { SITE_CONFIG, type TaskKey } from "@/lib/site-config";
 import { addLocalPost } from "@/lib/local-posts";
@@ -182,14 +183,14 @@ export default function CreateTaskPage() {
 
   if (!taskConfig || !formConfig) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#ececec] text-[#1d324a]">
         <NavbarShell />
         <main className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Task not available</h1>
-          <p className="mt-2 text-muted-foreground">
+          <h1 className="text-3xl font-extrabold text-[#2c4f71]">Task not available</h1>
+          <p className="mt-2 text-[#5a6f82]">
             This task is not enabled for the current site.
           </p>
-          <Button className="mt-6" asChild>
+          <Button className="mt-6 rounded-sm border border-[#0f6d22] bg-[#8de860] text-[#0d421b] hover:bg-[#9cf071]" asChild>
             <Link href="/">Back home</Link>
           </Button>
         </main>
@@ -271,31 +272,31 @@ export default function CreateTaskPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#ececec] text-[#1d324a]">
       <NavbarShell />
-      <main className="mx-auto max-w-4xl px-4 py-12">
-        <div className="mb-8 flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
+      <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="rounded-sm border border-[#c9d6e4] bg-white" asChild>
             <Link href="/">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">{formConfig.title}</h1>
-            <p className="text-sm text-muted-foreground">{formConfig.description}</p>
+            <h1 className="text-3xl font-extrabold text-[#2c4f71]">{formConfig.title}</h1>
+            <p className="text-sm text-[#5a6f82]">{formConfig.description}</p>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-8 shadow-sm">
+        <div className="rounded-md border border-[#d7dde5] bg-white p-6 shadow-[0_8px_24px_rgba(13,38,65,0.08)] sm:p-8">
           <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">{taskConfig.label}</Badge>
-            <Badge variant="outline">Local-only</Badge>
+            <Badge className="rounded-sm border border-[#b8c7d8] bg-[#f0f6fd] text-[#345a7f] hover:bg-[#f0f6fd]">{taskConfig.label}</Badge>
+            <Badge className="rounded-sm border border-[#d4deea] bg-white text-[#5f7a95] hover:bg-white">Local-only</Badge>
           </div>
 
           <div className="mt-6 grid gap-6">
             {formConfig.fields.map((field) => (
               <div key={field.key} className="grid gap-2">
-                <Label>
+                <Label className="text-xs font-bold uppercase tracking-[0.16em] text-[#5b738c]">
                   {field.label} {field.required ? <span className="text-red-500">*</span> : null}
                 </Label>
                 {field.type === "textarea" ? (
@@ -304,13 +305,13 @@ export default function CreateTaskPage() {
                     placeholder={field.placeholder}
                     value={values[field.key] || ""}
                     onChange={(event) => updateValue(field.key, event.target.value)}
-                    className="border-2 border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-primary/30"
+                    className="rounded-sm border border-[#b8c7d8] bg-white text-sm text-[#1f3a56] focus-visible:ring-2 focus-visible:ring-[#8db4de]"
                   />
                 ) : field.type === "category" ? (
                   <select
                     value={values[field.key] || ""}
                     onChange={(event) => updateValue(field.key, event.target.value)}
-                    className="h-11 rounded-lg border-2 border-slate-200 bg-white px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                    className="h-11 rounded-sm border border-[#b8c7d8] bg-white px-3 text-sm text-[#1f3a56] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8db4de]"
                   >
                     <option value="">Select category</option>
                     {CATEGORY_OPTIONS.map((option) => (
@@ -324,6 +325,7 @@ export default function CreateTaskPage() {
                     <Input
                       type="file"
                       accept="application/pdf"
+                      className="rounded-sm border border-[#b8c7d8]"
                       onChange={(event) => {
                         const file = event.target.files?.[0];
                         if (!file) return;
@@ -353,34 +355,35 @@ export default function CreateTaskPage() {
                       placeholder="Or paste a PDF URL"
                       value={values[field.key] || ""}
                       onChange={(event) => updateValue(field.key, event.target.value)}
+                      className="h-11 rounded-sm border border-[#b8c7d8] text-sm text-[#1f3a56]"
                     />
                     {uploadingPdf ? (
                       <p className="text-xs text-muted-foreground">Uploading PDF…</p>
                     ) : null}
                   </div>
                 ) : (
-                  <Input
-                    type={field.type === "number" ? "number" : "text"}
+                    <Input
+                      type={field.type === "number" ? "number" : "text"}
                     placeholder={
                       field.type === "images" || field.type === "tags" || field.type === "highlights"
                         ? "Separate values with commas"
                         : field.placeholder
                     }
-                    value={values[field.key] || ""}
-                    onChange={(event) => updateValue(field.key, event.target.value)}
-                    className="h-11 border-2 border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-primary/30"
-                  />
+                      value={values[field.key] || ""}
+                      onChange={(event) => updateValue(field.key, event.target.value)}
+                      className="h-11 rounded-sm border border-[#b8c7d8] bg-white text-sm text-[#1f3a56] focus-visible:ring-2 focus-visible:ring-[#8db4de]"
+                    />
                 )}
               </div>
             ))}
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button onClick={handleSubmit}>
+            <Button onClick={handleSubmit} className="rounded-sm border border-[#0f6d22] bg-[#8de860] text-[#0d421b] hover:bg-[#9cf071]">
               <Save className="mr-2 h-4 w-4" />
               Save locally
             </Button>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" className="rounded-sm border border-[#b9c8d8] bg-[#f5f8fb] text-[#365777] hover:bg-[#eaf1f8]" asChild>
               <Link href={taskConfig.route}>
                 View {taskConfig.label}
                 <Plus className="ml-2 h-4 w-4" />
@@ -389,6 +392,7 @@ export default function CreateTaskPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

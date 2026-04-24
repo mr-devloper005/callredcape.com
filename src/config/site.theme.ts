@@ -4,24 +4,24 @@ export const SITE_THEME = defineSiteTheme({
   shell: 'directory',
   hero: {
     variant: 'search-first',
-    eyebrow: 'Business discovery system',
+    eyebrow: 'Classifieds marketplace system',
   },
   home: {
-    layout: 'directory-stack',
-    primaryTask: 'listing',
-    featuredTaskKeys: ['listing', 'profile', 'classified'],
+    layout: 'market-catalog',
+    primaryTask: 'classified',
+    featuredTaskKeys: ['classified', 'profile', 'listing'],
   },
   navigation: {
-    variant: 'compact',
+    variant: 'minimal',
   },
   footer: {
-    variant: 'columns',
+    variant: 'minimal',
   },
   cards: {
-    listing: 'listing-elevated',
+    listing: 'catalog-grid',
     article: 'editorial-feature',
     image: 'studio-panel',
-    profile: 'studio-panel',
+    profile: 'catalog-grid',
     classified: 'catalog-grid',
     pdf: 'catalog-grid',
     sbm: 'editorial-feature',
