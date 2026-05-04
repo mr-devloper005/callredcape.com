@@ -2,7 +2,7 @@ import type { TaskKey } from '@/lib/site-config'
 
 export const siteContent = {
   navbar: {
-    tagline: 'Local classifieds marketplace',
+    tagline: '',
   },
   footer: {
     tagline: 'Post and discover local classifieds',
