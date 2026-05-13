@@ -6,6 +6,7 @@ import { buildPostUrl, getPostTaskKey } from '@/lib/task-data'
 import { getMockPostsForTask } from '@/lib/mock-posts'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { TaskPostCard } from '@/components/shared/task-post-card'
+import { CATEGORY_OPTIONS, normalizeCategory } from '@/lib/categories'
 
 export const revalidate = 3
 
@@ -26,13 +27,15 @@ export default async function SearchPage({
   const query = (resolved.q || '').trim()
   const normalized = query.toLowerCase()
   const category = (resolved.category || '').trim().toLowerCase()
+  const normalizedCategory = category && category !== 'all' ? normalizeCategory(category) : ''
   const task = (resolved.task || '').trim().toLowerCase()
   const useMaster = resolved.master !== '0'
+  const categoryForFetch = category && category !== 'all' ? category : undefined
 
   const feed = await fetchSiteFeed(
     useMaster ? 1000 : 300,
     useMaster
-      ? { fresh: true, category: category || undefined, task: task || undefined }
+      ? { fresh: true, category: categoryForFetch, task: task || undefined }
       : undefined
   )
 
@@ -51,10 +54,15 @@ export default async function SearchPage({
     const body = compactText((content as any).body)
     const excerpt = compactText((content as any).excerpt)
     const categoryText = compactText((content as any).category)
-    const tags = Array.isArray(post.tags) ? post.tags.join(' ') : ''
-    const tagsText = compactText(tags)
-    const derivedCategory = categoryText || tagsText
-    if (category && !derivedCategory.includes(category)) return false
+    const rawTags = Array.isArray(post.tags) ? post.tags.filter((item): item is string => typeof item === 'string') : []
+    const tagsText = compactText(rawTags.join(' '))
+    const normalizedCandidates = new Set<string>()
+    if (categoryText) normalizedCandidates.add(normalizeCategory(categoryText))
+    rawTags.forEach((tag) => {
+      const compact = compactText(tag)
+      if (compact) normalizedCandidates.add(normalizeCategory(compact))
+    })
+    if (normalizedCategory && !normalizedCandidates.has(normalizedCategory)) return false
     if (task && typeText && typeText !== task) return false
     if (!normalized.length) return true
     return (
@@ -82,10 +90,9 @@ export default async function SearchPage({
             Use keyword search across titles, summaries, categories, and content metadata.
           </p>
 
-          <form action="/search" className="mt-5 grid gap-3 rounded-sm border border-[#cad5e2] bg-[#f7f9fc] p-4 sm:grid-cols-[1fr_auto]">
-            <input type="hidden" name="master" value="1" />
-            {category ? <input type="hidden" name="category" value={category} /> : null}
-            {task ? <input type="hidden" name="task" value={task} /> : null}
+          <form action="/search" className="mt-5 grid gap-3 rounded-sm border border-[#cad5e2] bg-[#f7f9fc] p-4 sm:grid-cols-[1fr_220px_auto]">
+            <input type="hidden" name="master" defaultValue="1" />
+            {task ? <input type="hidden" name="task" defaultValue={task} /> : null}
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#47668a]" />
               <input
@@ -95,6 +102,18 @@ export default async function SearchPage({
                 className="h-11 w-full rounded-sm border border-[#b8c7d8] bg-white pl-9 pr-3 text-sm text-[#1f3a56]"
               />
             </div>
+            <select
+              name="category"
+              defaultValue={normalizedCategory || 'all'}
+              className="h-11 rounded-sm border border-[#b8c7d8] bg-white px-3 text-sm text-[#1f3a56]"
+            >
+              <option value="all">All categories</option>
+              {CATEGORY_OPTIONS.map((item) => (
+                <option key={item.slug} value={item.slug}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
             <button type="submit" className="inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-[#ae7526] bg-[#f9b95a] px-5 text-sm font-extrabold uppercase text-[#15395c] hover:bg-[#ffc476]">
               <Search className="h-4 w-4" />
               Search
