@@ -1,56 +1,76 @@
-import { Mail, MessageSquareText, ShieldCheck } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react'
+import { NavbarShell } from '@/components/shared/navbar-shell'
+import { Footer } from '@/components/shared/footer'
+import { SITE_CONFIG } from '@/lib/site-config'
+import { CONTACT_PAGE_OVERRIDE_ENABLED, ContactPageOverride } from '@/overrides/contact-page'
+import { ContactLeadForm } from "@/components/shared/contact-lead-form";
 
-import { ContactLeadForm } from '@/components/shared/contact-lead-form';
-import { Footer } from '@/components/shared/footer';
-import { NavbarShell } from '@/components/shared/navbar-shell';
+const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || 'support@callredcape.com'
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Callredcape';
-
-const contactHighlights = [
-  { icon: Mail, title: 'Direct response', copy: 'Your message is saved securely and routed to the right team.' },
-  { icon: MessageSquareText, title: 'Clear details', copy: 'Share your requirement, question, or collaboration idea in one place.' },
-  { icon: ShieldCheck, title: 'Reliable follow-up', copy: 'We keep the request record so every conversation stays traceable.' },
-];
+const supportLanes = [
+  {
+    icon: Phone,
+    title: 'Ad posting support',
+    body: 'Need help publishing, editing, or renewing a classified ad? Our support lane handles posting issues first.',
+  },
+  {
+    icon: Mail,
+    title: 'Safety and reporting',
+    body: 'Report suspicious activity, impersonation, or policy violations so we can review and respond quickly.',
+  },
+  {
+    icon: MapPin,
+    title: 'City and category requests',
+    body: 'Request new city/category coverage and share demand signals from your local marketplace.',
+  },
+]
 
 export default function ContactPage() {
+  if (CONTACT_PAGE_OVERRIDE_ENABLED) {
+    return <ContactPageOverride />
+  }
+
   return (
-    <div className="min-h-screen bg-[#f7f1e8] text-stone-950">
+    <div className="min-h-screen bg-[#ececec] text-[#1d324a]">
       <NavbarShell />
-      <main>
-        <section className="relative overflow-hidden px-6 py-20 md:px-10 lg:px-16">
-          <div className="absolute left-[-10%] top-10 h-72 w-72 rounded-full bg-amber-200/40 blur-3xl" />
-          <div className="absolute bottom-0 right-[-8%] h-80 w-80 rounded-full bg-stone-300/50 blur-3xl" />
-
-          <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.35em] text-stone-500">Contact</p>
-              <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[0.95] tracking-[-0.06em] text-stone-950 md:text-7xl">
-                Let&apos;s talk about your next move.
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-700">
-                Use this form to reach {siteName}. Your request will be recorded and shared with the support team for follow-up.
-              </p>
-
-              <div className="mt-8 grid gap-4">
-                {contactHighlights.map((item) => (
-                  <div key={item.title} className="flex gap-4 rounded-3xl border border-stone-200 bg-white/60 p-5 shadow-sm">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-stone-950 text-white">
-                      <item.icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-black text-stone-950">{item.title}</h2>
-                      <p className="mt-1 text-sm leading-6 text-stone-600">{item.copy}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+          <article className="rounded-md border border-[#d7dde5] bg-white p-6 shadow-[0_8px_24px_rgba(13,38,65,0.08)]">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#5a738e]">Contact {SITE_CONFIG.name}</p>
+            <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-[#2c4f71]">Support built for classifieds operations.</h1>
+            <p className="mt-4 text-sm leading-7 text-[#5a6f82]">
+              Share your issue with details and we will route it to the right lane. For fastest resolution, include ad URL, city, and exact action attempted.
+            </p>
+            <div className="mt-6 space-y-3">
+              {supportLanes.map((lane) => (
+                <div key={lane.title} className="rounded-sm border border-[#d2dbe6] bg-[#f7fafe] p-4">
+                  <lane.icon className="h-4 w-4 text-[#2f6ea9]" />
+                  <h2 className="mt-2 text-lg font-bold text-[#2b4c6d]">{lane.title}</h2>
+                  <p className="mt-1 text-sm leading-6 text-[#5b7084]">{lane.body}</p>
+                </div>
+              ))}
             </div>
+          </article>
 
+          <article className="rounded-md border border-[#d7dde5] bg-white p-6 shadow-[0_8px_24px_rgba(13,38,65,0.08)]">
+            <h2 className="text-2xl font-extrabold text-[#2b4c6d]">Send a message</h2>
+            {CONTACT_EMAIL ? (
+              <div className="mt-4 rounded-sm border border-[#d2dbe6] bg-[#f7fafe] p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#5b738c]">Email us directly</p>
+                <p className="mt-2 text-sm text-[#2b4c6d]">{CONTACT_EMAIL}</p>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="mt-3 inline-flex h-10 items-center justify-center rounded-sm border border-[#2f6ea9] bg-white px-4 text-sm font-bold uppercase text-[#2f6ea9] hover:bg-[#eaf3fb]"
+                >
+                  Email support
+                </a>
+              </div>
+            ) : null}
             <ContactLeadForm />
-          </div>
+          </article>
         </section>
       </main>
       <Footer />
     </div>
-  );
+  )
 }
