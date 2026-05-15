@@ -48,7 +48,6 @@ export function NavbarOverride() {
             </div>
             <div>
               <p className="text-3xl font-black leading-none tracking-tight text-[#ffb347]">{SITE_CONFIG.name}</p>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a5d0ff]">Classifieds for local buyers and sellers</p>
             </div>
           </Link>
 

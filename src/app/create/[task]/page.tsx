@@ -37,7 +37,7 @@ type Field = {
 const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields: Field[] }> = {
   listing: {
     title: "Create Business Listing",
-    description: "Add a local-only listing with business details.",
+    description: "Add a listing with business details.",
     fields: [
       { key: "title", label: "Listing title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -55,7 +55,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   classified: {
     title: "Create Classified",
-    description: "Add a local-only classified ad.",
+    description: "Add a classified ad.",
     fields: [
       { key: "title", label: "Ad title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -72,7 +72,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   article: {
     title: "Create Article",
-    description: "Write a local-only article post.",
+    description: "Write an article post.",
     fields: [
       { key: "title", label: "Article title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -84,7 +84,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   image: {
     title: "Create Image Share",
-    description: "Share image-only content locally.",
+    description: "Share image-only content.",
     fields: [
       { key: "title", label: "Image title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -96,7 +96,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   profile: {
     title: "Create Profile",
-    description: "Create a local-only business profile.",
+    description: "Create a business profile.",
     fields: [
       { key: "brandName", label: "Brand name", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -107,7 +107,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   social: {
     title: "Create Social Post",
-    description: "Publish a local-only social update.",
+    description: "Publish a social update.",
     fields: [
       { key: "title", label: "Post title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -119,7 +119,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   sbm: {
     title: "Create Bookmark",
-    description: "Submit a local-only social bookmark.",
+    description: "Submit a social bookmark.",
     fields: [
       { key: "title", label: "Bookmark title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -131,7 +131,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   pdf: {
     title: "Create PDF Entry",
-    description: "Add a local-only PDF resource.",
+    description: "Add a PDF resource.",
     fields: [
       { key: "title", label: "PDF title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -143,7 +143,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   org: {
     title: "Create Organization",
-    description: "Create a local-only organization profile.",
+    description: "Create an organization profile.",
     fields: [
       { key: "brandName", label: "Organization name", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -154,7 +154,7 @@ const FORM_CONFIG: Record<TaskKey, { title: string; description: string; fields:
   },
   comment: {
     title: "Create Blog Comment",
-    description: "Store a local-only blog comment entry.",
+    description: "Store a blog comment entry.",
     fields: [
       { key: "title", label: "Comment title", type: "text", required: true },
       { key: "summary", label: "Short summary", type: "textarea", required: true },
@@ -264,8 +264,8 @@ export default function CreateTaskPage() {
     });
 
     toast({
-      title: "Saved locally",
-      description: "This post is stored only in your browser.",
+      title: "Saved",
+      description: "This post is stored in your browser.",
     });
 
     router.push(`/local/${taskKey}/${post.slug}`);
@@ -290,7 +290,7 @@ export default function CreateTaskPage() {
         <div className="rounded-md border border-[#d7dde5] bg-white p-6 shadow-[0_8px_24px_rgba(13,38,65,0.08)] sm:p-8">
           <div className="flex flex-wrap gap-2">
             <Badge className="rounded-sm border border-[#b8c7d8] bg-[#f0f6fd] text-[#345a7f] hover:bg-[#f0f6fd]">{taskConfig.label}</Badge>
-            <Badge className="rounded-sm border border-[#d4deea] bg-white text-[#5f7a95] hover:bg-white">Local-only</Badge>
+            <Badge className="rounded-sm border border-[#d4deea] bg-white text-[#5f7a95] hover:bg-white">Draft</Badge>
           </div>
 
           <div className="mt-6 grid gap-6">
@@ -344,7 +344,7 @@ export default function CreateTaskPage() {
                           setUploadingPdf(false);
                           toast({
                             title: "PDF uploaded",
-                            description: "File is stored locally.",
+                            description: "File selected.",
                           });
                         };
                         reader.readAsDataURL(file);
@@ -381,7 +381,7 @@ export default function CreateTaskPage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Button onClick={handleSubmit} className="rounded-sm border border-[#0f6d22] bg-[#8de860] text-[#0d421b] hover:bg-[#9cf071]">
               <Save className="mr-2 h-4 w-4" />
-              Save locally
+              Save
             </Button>
             <Button variant="ghost" className="rounded-sm border border-[#b9c8d8] bg-[#f5f8fb] text-[#365777] hover:bg-[#eaf1f8]" asChild>
               <Link href={taskConfig.route}>
