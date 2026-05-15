@@ -30,13 +30,6 @@ const readNumber = (value: unknown) => {
   return null
 }
 
-const formatPrice = (value: unknown) => {
-  const raw = readString(value)
-  if (raw) return raw
-  const numeric = readNumber(value)
-  if (numeric === null) return ''
-  return `₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(numeric)}`
-}
 
 const detailValue = (value: unknown) => {
   const asText = readString(value)
@@ -77,12 +70,6 @@ export function DirectoryTaskDetailPage({
     ? content.highlights.filter((item): item is string => typeof item === 'string')
     : []
   const websiteHref = website ? (website.startsWith('http://') || website.startsWith('https://') ? website : `https://${website}`) : ''
-  const price =
-    formatPrice(content.price) ||
-    formatPrice(content.amount) ||
-    formatPrice(content.budget) ||
-    formatPrice(content.salary) ||
-    ''
   const fuelType = readString(content.fuelType || content.fuel)
   const owner = readString(content.owner || content.ownership || content.ownerType)
   const views = readNumber(content.views || (post as any).views)
@@ -251,7 +238,6 @@ export function DirectoryTaskDetailPage({
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">{category || taskLabel}</p>
-                  <p className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{price || 'Contact for price'}</p>
                 </div>
                 <span className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
                   <Tag className="h-3.5 w-3.5" /> {taskLabel}

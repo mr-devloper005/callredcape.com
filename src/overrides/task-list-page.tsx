@@ -5,7 +5,7 @@ import { Footer } from '@/components/shared/footer'
 import { TaskListClient } from '@/components/tasks/task-list-client'
 import { fetchTaskPosts } from '@/lib/task-data'
 import { getTaskConfig, type TaskKey } from '@/lib/site-config'
-import { normalizeCategory } from '@/lib/categories'
+import { CATEGORY_OPTIONS, normalizeCategory } from '@/lib/categories'
 
 export const TASK_LIST_PAGE_OVERRIDE_ENABLED = true
 
@@ -31,13 +31,31 @@ export async function TaskListPageOverride({ task, category }: { task: TaskKey; 
             <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-[#2c4f71]">Latest classified ads</h1>
             <p className="mt-2 text-sm leading-7 text-[#5a6f82]">Quick-scan feed for local buying, selling, hiring, and services.</p>
 
-            <form action="/search" className="mt-5 grid gap-3 rounded-sm border border-[#cad5e2] bg-[#f7f9fc] p-4 sm:grid-cols-[1fr_auto]">
-              <input name="q" placeholder="Search this board" className="h-11 rounded-sm border border-[#b8c7d8] bg-white px-3 text-sm text-[#1f3a56]" />
+            <form action="/search" className="mt-5 grid gap-3 rounded-sm border border-[#cad5e2] bg-[#f7f9fc] p-4 sm:grid-cols-[1fr_220px_auto]">
+              <input type="hidden" name="task" defaultValue="classified" />
+              <input
+                name="q"
+                placeholder="Search this board"
+                className="h-11 rounded-sm border border-[#b8c7d8] bg-white px-3 text-sm text-[#1f3a56]"
+              />
+              <select
+                name="category"
+                defaultValue={normalizedCategory}
+                className="h-11 rounded-sm border border-[#b8c7d8] bg-white px-3 text-sm text-[#1f3a56]"
+              >
+                <option value="all">All categories</option>
+                {CATEGORY_OPTIONS.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
               <button type="submit" className="inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-[#ae7526] bg-[#f9b95a] px-5 text-sm font-extrabold uppercase text-[#15395c] hover:bg-[#ffc476]">
                 <Search className="h-4 w-4" />
                 Search
               </button>
             </form>
+
           </section>
 
           <section className="mt-6">

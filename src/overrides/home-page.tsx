@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Search, SquareArrowOutUpRight, Tag } from 'lucide-react'
+import { MapPin, Search, SquareArrowOutUpRight } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
 import { SchemaJsonLd } from '@/components/seo/schema-jsonld'
@@ -54,14 +54,6 @@ function getLocation(post: any) {
   return value || 'India'
 }
 
-function getPrice(post: any) {
-  const content = post?.content && typeof post.content === 'object' ? (post.content as Record<string, unknown>) : {}
-  const value = content.price
-  if (typeof value === 'number' && Number.isFinite(value)) return `Rs ${value.toLocaleString('en-IN')}`
-  if (typeof value === 'string' && value.trim()) return value
-  return null
-}
-
 export async function HomePageOverride() {
   const ads = await fetchTaskPosts('classified', 24, { fresh: true })
   const spotlight = ads.slice(0, 10)
@@ -87,18 +79,14 @@ export async function HomePageOverride() {
         <section>
           <div className="rounded-md border border-[#d7dde5] bg-white p-5 shadow-[0_8px_24px_rgba(13,38,65,0.08)]">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2 rounded-sm border border-[#9fb2c6] bg-[#f2f6fb] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#284b71]">
-                <Tag className="h-3.5 w-3.5" />
-                Free classifieds in India
-              </span>
               <Link href="/create/classified" className="ml-auto inline-flex items-center rounded-sm border border-[#0f6d22] bg-[#8de860] px-4 py-2 text-sm font-bold text-[#0d421b] hover:bg-[#9cf071]">
                 Post an ad
               </Link>
             </div>
 
-            <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#27496a] sm:text-5xl">Buy, Sell, Rent, Hire. Fast local classifieds.</h1>
+            <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#27496a] sm:text-5xl">Buy, Sell, Rent, Hire. Fast and simple.</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[#4f6478]">
-              Browse verified local classifieds for jobs, rentals, services, properties, and resale deals. Built for quick scanning and fast contact.
+              Browse verified listings for jobs, rentals, services, properties, and resale deals. Built for quick scanning and easy contact.
             </p>
 
             <form action="/search" className="mt-6 grid gap-3 rounded-sm border border-[#cad5e2] bg-[#f7f9fc] p-4 sm:grid-cols-[1fr_1fr_auto]">
@@ -119,10 +107,9 @@ export async function HomePageOverride() {
 
             <div className="mt-5 space-y-1">
               {spotlight.map((post) => {
-                const price = getPrice(post)
                 const location = getLocation(post)
                 return (
-                  <article key={post.id} className="grid gap-3 border-b border-[#e3e8ef] py-4 sm:grid-cols-[94px_1fr_auto] sm:items-center">
+                  <article key={post.id} className="grid gap-3 border-b border-[#e3e8ef] py-4 sm:grid-cols-[94px_1fr] sm:items-center">
                     <div className="relative h-[74px] w-[94px] overflow-hidden rounded-sm border border-[#d2dae4] bg-[#eff3f7]">
                       <ContentImage src={getImage(post)} alt={post.title} fill className="object-cover" />
                     </div>
@@ -133,7 +120,6 @@ export async function HomePageOverride() {
                       <p className="line-clamp-2 text-sm leading-6 text-[#586d80]">{post.summary || 'Fresh local post with direct contact path and clearer listing information.'}</p>
                       <p className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-[#0a7d2e]"><MapPin className="h-3.5 w-3.5" />{location}</p>
                     </div>
-                    {price ? <p className="inline-flex h-10 items-center rounded-sm bg-[#f59a3a] px-4 text-base font-bold text-white">{price}</p> : null}
                   </article>
                 )
               })}
@@ -157,7 +143,6 @@ export async function HomePageOverride() {
                 <li key={city.name}>
                   <Link href={`/search?q=${encodeURIComponent(city.name)}`} className="flex items-center justify-between rounded-sm px-2 py-1.5 text-[0.98rem] text-[#1d5ca8] hover:bg-[#e7f0fa]">
                     <span>{city.name}</span>
-                    <span className="text-xs font-semibold text-[#5f7791]">{city.count}</span>
                   </Link>
                 </li>
               ))}
